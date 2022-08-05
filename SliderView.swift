@@ -8,19 +8,20 @@
 import SwiftUI
 
 struct SliderView: View {
-    
-    let fixedSliderHeight = UIScreen.main.bounds.height / 2
-    
     @State var sliderHeight = (UIScreen.main.bounds.height / 2) / 2 // This has to be half of the sliders height.
     @State var answer : Double = 0
     @State var offset : CGFloat = 0
-    @State var menuOpened = false
+    @State var informationMenuOpened = false
+    @State var goButtonPressed = false
+    @State var optionPressed = false
     
+    
+    let fixedSliderHeight = UIScreen.main.bounds.height / 2
     let numbers = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10]
     let width = UIScreen.main.bounds.width
     let height = UIScreen.main.bounds.height
     let interval = (((UIScreen.main.bounds.height / 2 / 2) - 30) * 2.0) / 20.0
-    
+
     var body: some View {
         ZStack {
             Color("Cream").ignoresSafeArea()
@@ -42,7 +43,7 @@ struct SliderView: View {
                     HStack {
                         Button {
                             withAnimation {
-                                menuOpened = true
+                                informationMenuOpened = true
                             }
                         } label : {
                             ZStack {
@@ -173,10 +174,13 @@ struct SliderView: View {
                     .frame(height: height * 0.05)
                 
                 Button {
-                    print(answer)
+                    withAnimation {
+                        goButtonPressed = true
+                    }
                 } label: {
                     Text("GO")
                         .font(Font.custom("Avenir Book", size: 30))
+                        .bold()
                         .padding()
                         .background(Color("DarkGreen"))
                         .clipShape(Circle())
@@ -186,9 +190,18 @@ struct SliderView: View {
                 Spacer()
             }
             
-            if menuOpened {
-                InformationMenu(menuOpened: $menuOpened)
+            if informationMenuOpened {
+                InformationMenu(menuOpened: $informationMenuOpened)
             }
+            
+            if goButtonPressed {
+                CheckInView(menuOpened: $goButtonPressed, optionChecked: $optionPressed, answers: Int16(answer))
+            }
+            
+            if optionPressed {
+                SuccessView(menuOpened: $optionPressed)
+            }
+                
         }
     }
     
